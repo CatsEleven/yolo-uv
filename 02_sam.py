@@ -1,21 +1,31 @@
 import cv2
 import numpy as np
 from ultralytics import YOLO, SAM
+from pathlib import Path
 
-# --- Model and Image Paths ---
+# --- Path Settings ---
+SOURCE_DIR = Path("yolo/source")
+DEST_DIR = Path("yolo/dest")
+DEST_DIR.mkdir(parents=True, exist_ok=True)
+
+# --- Input ---
+# このファイル名を変更して、処理する画像を指定します
+source_file_name = "fast.png"
+source_path = SOURCE_DIR / source_file_name
+output_path = DEST_DIR / f"{source_path.stem}_detected.png"
+
+# --- Model Loading ---
 yolo_model = YOLO("model/yolov8n.pt")
 sam_model = SAM("model/sam2.1_b.pt")
-img_path = "sam/source/fast.png"
-output_path = "sam/dest/bikeeee.png"
 
 # --- Image Loading ---
-image_bgr = cv2.imread(img_path)
+image_bgr = cv2.imread(str(source_path))
 if image_bgr is None:
-    print(f"Error: Could not read image from {img_path}")
+    print(f"Error: Could not read image from {source_path}")
     exit()
 
 # --- YOLO Object Detection ---
-yolo_results = yolo_model(img_path)
+yolo_results = yolo_model(source_path)
 boxes = yolo_results[0].boxes.xyxy.cpu().numpy()
 clses = yolo_results[0].boxes.cls.cpu().numpy()
 
@@ -36,7 +46,7 @@ def posterize(img, k=8):
 
 # Process each detected person
 for idx, bbox in enumerate(person_boxes):
-    sam_results = sam_model(img_path, bboxes=bbox)
+    sam_results = sam_model(source_path, bboxes=bbox)
     mask = sam_results[0].masks.data[0].cpu().numpy().astype(np.uint8)
     mask = cv2.resize(mask, (image_bgr.shape[1], image_bgr.shape[0]), interpolation=cv2.INTER_NEAREST)
     
@@ -59,5 +69,5 @@ for idx, bbox in enumerate(person_boxes):
     result = cv2.add(bg, fg)
 
 # --- Save Result ---
-cv2.imwrite(output_path, result)
+cv2.imwrite(str(output_path), result)
 print(f"Image saved to {output_path}")

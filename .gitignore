@@ -1,4 +1,5 @@
 model/
+.DS_Store
 
 /yolo/source/*
 /yolo/dest/*
