@@ -1,6 +1,14 @@
+model/
+
 /yolo/source/*
 /yolo/dest/*
-model/
+
+/sam/source/*
+/sam/dest/*
+
 
 !/yolo/source/.gitkeep
 !/yolo/dest/.gitkeep
+
+!/sam/source/.gitkeep
+!/sam/dest/.gitkeep
