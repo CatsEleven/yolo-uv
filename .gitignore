@@ -1,0 +1,6 @@
+/yolo/source/*
+/yolo/dest/*
+model/
+
+!/yolo/source/.gitkeep
+!/yolo/dest/.gitkeep
