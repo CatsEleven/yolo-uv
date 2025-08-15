@@ -7,6 +7,9 @@ model/
 /sam/source/*
 /sam/dest/*
 
+/movie
+/mqtt
+
 
 !/yolo/source/.gitkeep
 !/yolo/dest/.gitkeep
